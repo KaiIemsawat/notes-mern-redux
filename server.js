@@ -7,7 +7,10 @@ import corsOptions from "./config/corsOprions.js";
 import { errorHandler, logger } from "./middleware/logger.js";
 import rootRouter from "./routes/root.js"; // Import the router using ES module syntax
 import root404 from "./routes/root404.js";
+import dotenv from "dotenv";
 
+dotenv.config();
+console.log(process.env.NODE_ENV);
 const PORT = process.env.PORT || 3500;
 
 // To fix 'ReferenceError: __dirname is not defined in ES module scope' issue when use "type": "module"
