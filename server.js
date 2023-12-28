@@ -3,6 +3,7 @@ import path from "path";
 
 import rootRouter from "./routes/root.js"; // Import the router using ES module syntax
 import root404 from "./routes/root404.js";
+import { logEvent, logger } from "./middleware/logger.js";
 
 const PORT = process.env.PORT || 3500;
 
@@ -10,7 +11,11 @@ const PORT = process.env.PORT || 3500;
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 const app = express();
-app.use("/", express.static(path.join(__dirname, "/public")));
+
+app.use(logger);
+app.use(express.json());
+
+app.use("/", express.static(path.join(__dirname, "public")));
 app.use("/", rootRouter);
 app.use("*", root404);
 
