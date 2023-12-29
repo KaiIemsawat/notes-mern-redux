@@ -9,7 +9,7 @@ import User from "../models/UserModel.js";
 const getAllUsers = asyncHandler(async (req, res) => {
     const users = await User.find().select("-password").lean();
 
-    if (!users) {
+    if (!users?.length) {
         return res.status(400).json({ message: "No user found" });
     }
 
@@ -106,7 +106,6 @@ const deleteUser = asyncHandler(async (req, res) => {
     }
 
     const result = await user.deleteOne();
-
     const reply = `Username ${result.username} with ID ${result._id} is deleted`;
     res.json(reply);
 });
