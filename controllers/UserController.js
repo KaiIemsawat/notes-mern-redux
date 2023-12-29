@@ -113,7 +113,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 
     await user.deleteOne();
 
-    const reply = `Username ${user.username} with ID ${user._id} is deleted`;
+    const reply = `Username ${user.username} with ID #${user._id} has been deleted`;
     res.json({ message: reply });
 });
 
