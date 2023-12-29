@@ -11,6 +11,7 @@ import root404 from "./routes/root404.js";
 import dotenv from "dotenv";
 import dbConn from "./config/dbConn.js";
 import userRoute from "./routes/userRoutes.js";
+import noteRoute from "./routes/noteRoutes.js";
 
 dotenv.config();
 console.log(process.env.NODE_ENV);
@@ -30,6 +31,7 @@ app.use(cookieParser());
 app.use("/", express.static(path.join(__dirname, "public")));
 app.use("/", rootRouter);
 app.use("/users", userRoute);
+app.use("/notes", noteRoute);
 app.use("*", root404);
 
 app.use(errorHandler);
