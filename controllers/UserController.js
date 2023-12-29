@@ -49,6 +49,7 @@ const createNewUser = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
     const { id, username, roles, active, password } = req.body;
 
+    console.log(id, username, roles, active);
     if (
         !id ||
         !username ||
@@ -81,7 +82,9 @@ const updateUser = asyncHandler(async (req, res) => {
 
     const updetedUser = await user.save();
 
-    res.json({ message: `${updetedUser.username} update` });
+    res.json({
+        message: `${updetedUser.username}'s information has been updated`,
+    });
 });
 
 // Description - DELETE - "/users" - Delete a usaer
@@ -95,18 +98,20 @@ const deleteUser = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: "User ID required" });
     }
     // - case still hae note assigned
-    const notes = await Note.findOne({ user: id }).lean().exec();
-    if (notes?.length) {
+    const note = await Note.findOne({ user: id }).lean().exec();
+    if (note) {
         return res.status(400).json({ message: "User has assigned notes" });
     }
     // - case id not match
     const user = await User.findById(id).exec();
+
     if (!user) {
-        return res.status(400).json({ message: "User not found" });
+        return res.status(404).json({ message: "User not found" });
     }
 
-    const result = await user.deleteOne();
-    const reply = `Username ${result.username} with ID ${result._id} is deleted`;
+    await user.deleteOne();
+
+    const reply = `Username ${user.username} with ID ${user._id} is deleted`;
     res.json(reply);
 });
 
