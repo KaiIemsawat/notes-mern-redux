@@ -38,9 +38,11 @@ const createNewUser = asyncHandler(async (req, res) => {
     const userObj = { username, password: hashedPassword, roles };
     const user = await User.create(userObj);
     if (user) {
-        res.status(201).json({ message: `New user ${username} created` });
+        return res
+            .status(201)
+            .json({ message: `New user - ${username} - created` });
     } else {
-        res.status(400).json({ message: "Invalid user data received" });
+        return res.status(400).json({ message: "Invalid user data received" });
     }
 });
 
@@ -49,7 +51,7 @@ const createNewUser = asyncHandler(async (req, res) => {
 const updateUser = asyncHandler(async (req, res) => {
     const { id, username, roles, active, password } = req.body;
 
-    console.log(id, username, roles, active);
+    // console.log(id, username, roles, active);
     if (
         !id ||
         !username ||
@@ -112,7 +114,7 @@ const deleteUser = asyncHandler(async (req, res) => {
     await user.deleteOne();
 
     const reply = `Username ${user.username} with ID ${user._id} is deleted`;
-    res.json(reply);
+    res.json({ message: reply });
 });
 
 export { getAllUsers, createNewUser, updateUser, deleteUser };

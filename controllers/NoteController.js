@@ -13,9 +13,55 @@ const getAllNotes = asyncHandler(async (req, res) => {
     res.json(notes);
 });
 
-const createNewNote = asyncHandler(async (req, res) => {});
+const createNewNote = asyncHandler(async (req, res) => {
+    const { user, title, text } = req.body;
 
-const updateNote = asyncHandler(async (req, res) => {});
+    if (!user || !title || !text) {
+        return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const isDup = await Note.findOne({ title }).lean().exec();
+    if (isDup) {
+        return res.status(409).json({ message: "Duplicate title" });
+    }
+
+    const newNote = await Note.create({ user, title, text });
+    if (newNote) {
+        return res
+            .status(201)
+            .json({ message: `New note - ${title} - created` });
+    } else {
+        return res.status(400).json({ message: "Invalid data received" });
+    }
+});
+
+const updateNote = asyncHandler(async (req, res) => {
+    const { id, user, title, text, completed } = req.body;
+    console.log(id, user, title, text, completed);
+
+    if (!id || !user || !title || !text || typeof completed !== "boolean") {
+        return res.status(400).json({ message: "All fileds are required" });
+    }
+
+    const note = await Note.findById(id).exec();
+    if (!note) {
+        return res.status(400).json({ message: "Note not found" });
+    }
+
+    const isDup = await Note.findOne({ title }).lean().exec();
+    if (isDup && isDup?._id.toString() !== id) {
+        return res.status(409).json({ message: "Duplicate title" });
+    }
+
+    note.user = user;
+    note.title = title;
+    note.text = text;
+    note.completed = completed;
+
+    await note.save();
+
+    res.json({ message: `${note.title}'s been updated` });
+});
 
 const deleteNote = asyncHandler(async (req, res) => {});
 
