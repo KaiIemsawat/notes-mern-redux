@@ -10,6 +10,7 @@ import rootRouter from "./routes/root.js"; // Import the router using ES module 
 import root404 from "./routes/root404.js";
 import dotenv from "dotenv";
 import dbConn from "./config/dbConn.js";
+import userRoute from "./routes/userRoutes.js";
 
 dotenv.config();
 console.log(process.env.NODE_ENV);
@@ -28,6 +29,7 @@ app.use(cookieParser());
 
 app.use("/", express.static(path.join(__dirname, "public")));
 app.use("/", rootRouter);
+app.use("/users", userRoute);
 app.use("*", root404);
 
 app.use(errorHandler);
